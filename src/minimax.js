@@ -3,7 +3,7 @@
  *
  * This is the only file you need
  * to modify to pass all tests.
- * 
+ *
  * Contents:
  * 1. minimaxWrapper: Pre-written
  * 2. heuristic: Pre-written
@@ -67,14 +67,14 @@ const heuristic = (state, maximizingPlayer) => {
     // The following function, sums up the number of lines
     // of lengths 2, 3, and 4, weighted very strongly according
     // to their length.
-    const advantageFunction = player => [2,3,4].reduce((total, numLines) =>
+    const advantageFunction = player => [2, 3, 4].reduce((total, numLines) =>
         total + state.numLines(numLines, player) * Math.pow(100, numLines), 0);
 
     // Then for the heuristic, we just return the advantage
     // of the maximizing player, less the advantage of the
     // minimizing player.
     return advantageFunction(maximizingPlayer) - advantageFunction(minimizingPlayer);
-}
+};
 
 /*
  * isBaseCase
@@ -94,7 +94,13 @@ const isBaseCase = (state, depth) => {
     const possibleSuccessorStates = state.nextStates();
     const numberPossibleSuccessorStates = possibleSuccessorStates.length;
     // Your code here.
-}
+
+    if (depth === 0 || numberPossibleSuccessorStates === 0) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 /*
  * minimax
@@ -110,8 +116,9 @@ const isBaseCase = (state, depth) => {
 const minimax = (state, depth, maximizingPlayer) => {
     if (isBaseCase(state, depth)) {
         // Invoke heuristic
+        return heuristic(state, maximizingPlayer);
     } else {
-        // Possible states is an array of future states, of 
+        // Possible states is an array of future states, of
         // the same kind that gets passed into the "state"
         // paramter in minimax.
         const possibleStates = state.nextStates();
@@ -119,8 +126,20 @@ const minimax = (state, depth, maximizingPlayer) => {
         const currentPlayer = state.nextMovePlayer;
         // Reduce to further
         // invocations of minimax.
+
+        if (currentPlayer === maximizingPlayer) {
+            const result = player => possibleStates.reduce((total, singleState) =>
+            total + minimax(singleState, depth - 1, player), 0);
+            return result(minimizingPlayer);
+        }
+
+        if (currentPlayer === minimizingPlayer) {
+            const result = player => possibleStates.reduce((total, singleState) =>
+            total + minimax(singleState, depth - 1, player), 0);
+            return result(maximizingPlayer);
+        }
     }
-}
+};
 
 
 /*
@@ -132,16 +151,16 @@ const minimax = (state, depth, maximizingPlayer) => {
 const minimaxAlphaBeta = (state, depth, maximizingPlayer) => {
 
 	const minimaxAlphaBetaInner = (state, depth, alpha, beta) => {
-        
+
         if (isBaseCase(state, depth)) {
             // Invoke heuristic
         } else {
             // Reduce further.
         }
-	}
+	};
 
-	return minimaxAlphaBetaInner(state, depth, -10000000,10000000);
-}
+	return minimaxAlphaBetaInner(state, depth, -10000000, 10000000);
+};
 
 module.exports = {
     minimaxWrapper,
